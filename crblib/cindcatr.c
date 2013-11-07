@@ -30,7 +30,7 @@ Ratio = UnPackedLenT * 1000 / PackedLenT;
 Ratiodec = Ratio - (Ratio/1000)*1000;
 Ratio /= 1000;
 
-fprintf(ToFile," %7lu -> %7lu = %2u.%03u bpb = %2u.%03u to 1 ",
+fprintf(ToFile," %7lu -> %7lu = %2lu.%03lu bpb = %2lu.%03lu to 1 ",
   UnPackedLen,PackedLen,BPB,BPBdec,Ratio,Ratiodec);
 
 }
@@ -60,7 +60,7 @@ Ratio = UnPackedLenT * 1000 / PackedLenT;
 Ratiodec = Ratio - (Ratio/1000)*1000;
 Ratio /= 1000;
 
-fprintf(ToFile," %7lu -> %7lu = %2u.%03u bpb = %2u.%03u to 1 ",
+fprintf(ToFile," %7lu -> %7lu = %2lu.%03lu bpb = %2lu.%03lu to 1 ",
   PackedLen,UnPackedLen,BPB,BPBdec,Ratio,Ratiodec);
 
 }
@@ -85,6 +85,6 @@ BPB = PackedLenT * 8000 / UnPackedLenT;
 BPBdec = BPB - (BPB/1000)*1000;
 BPB /= 1000;
 
-fprintf(ToFile," %2u.%03u bpb ",BPB,BPBdec);
+fprintf(ToFile," %2lu.%03lu bpb ",BPB,BPBdec);
 
 }
