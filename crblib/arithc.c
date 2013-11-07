@@ -2,7 +2,9 @@
 #include <crblib/arithc.h>
 #include <crblib/arithc._h>
 
+#if !defined(unix)
 #pragma warning( disable : 4244 )	// loss of data in conversion
+#endif
 
 /*functions:*/
 
