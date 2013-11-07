@@ -244,7 +244,7 @@ double ValNumeric (struct EqData *D);
 void ReplaceMade  (struct EqData *D);
 void ShowCRBEQ    (struct EqData *D);
 void OptimizeCRBEQ(struct EqData *D);
-void AddDebugMess (struct EqData *D,ubyte *S);
+void AddDebugMess (struct EqData *D, char *S);
 
 void PreParse     (struct EqData *D);
 void Eq2Tok       (struct EqData *D,ubyte *S);
@@ -253,7 +253,7 @@ void ReOrdTok     (struct EqData *D,ubyte *S);
 
 double Factorial(double N);
 
-double ValStrEq(char *streq)
+double ValStrEq(ubyte *streq)
 {
 struct EqData *eq;
 double v;
@@ -887,7 +887,7 @@ void ShowCRBEQ(struct EqData *d)
 {
 register ubyte *EQ;
 register int c;
-ubyte *Out;
+char *Out;
 ubyte *OutT;
 
 if ( (Out=AllocMem(STRSIZE,MEMF_ANY)) == NULL) return;
@@ -1250,7 +1250,7 @@ if (d->DebugMess)
 FreeMem(d,sizeof(struct EqData));
 }
 
-void AddDebugMess(struct EqData *D, ubyte *S)
+void AddDebugMess(struct EqData *D, char *S)
 {
 
 if (D->DebugMess[D->DebugMessNext]=AllocMem(STRSIZE,MEMF_ANY))

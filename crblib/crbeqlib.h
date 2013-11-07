@@ -45,7 +45,7 @@ struct EqData
   ubyte *OrdWork;
   };
 
-extern double		   ValStrEq(char *streq);
+extern double		   ValStrEq(ubyte *streq);
 #define ValStrEq_Error HUGE_VAL
 
 #define valstr ValStrEq
