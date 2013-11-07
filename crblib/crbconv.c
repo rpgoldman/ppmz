@@ -175,18 +175,18 @@ void ltoh(char *StrPtr,ulong ULV)
 {
 if ( ULV <= 0xFF )
   {
-  sprintf(StrPtr,"0x%02X",ULV);
+  sprintf(StrPtr,"0x%02lX",ULV);
   }
 else if ( ULV <= 0xFFFF )
   {
-  sprintf(StrPtr,"0x%04X",ULV);
+  sprintf(StrPtr,"0x%04lX",ULV);
   }
 else if ( ULV <= 0xFFFFFF )
   {
-  sprintf(StrPtr,"0x%06X",ULV);
+  sprintf(StrPtr,"0x%06lX",ULV);
   }
 else
   {
-  sprintf(StrPtr,"0x%08X",ULV);
+  sprintf(StrPtr,"0x%08lX",ULV);
   }
 }
