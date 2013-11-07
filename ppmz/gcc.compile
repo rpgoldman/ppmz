@@ -1,0 +1,18 @@
+Notes about compilation of ppmz packege with gcc 2.95.2
+
+
+ppmcoder.c referenced functions intlog2, and intlog2r.  
+They are defined in ../crblib/intmath.*; intmath.c has to be compiled 
+and added to libcrb.a
+
+main.c uses three times NumPerCheck.  
+A conditionally compiled "good guess" was added. 
+
+Default filenames (defined in main.c) should be something smarter than
+#define DEFAULT_OUT_ENC "r:\\ppmz.enc"
+#define DEFAULT_OUT_DEC "r:\\ppmz.dec"
+
+
+In ppmz.mak better place for include files is '..'
+
+Removal of libcrb.a was deleted from 'clean' part.

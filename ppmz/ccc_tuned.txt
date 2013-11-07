@@ -1,0 +1,102 @@
+Tuning BIB improved   1.744 bpb  to   1.743 bpb 
+ZESC_ESC_INC    = 17
+ZESC_ESCTOT_INC = 1
+ZESC_TOT_INC    = 17
+ZESC_INIT_SCALE = 5
+ZESC_INIT_ESC   = 7
+ZESC_INIT_TOT   = 12
+DET_FAILED_ML_INC = 11
+escapeScale    = 20
+escUpdateScale = 9
+Tuning geo_reorg improved   3.878 bpb  to   3.874 bpb 
+ZESC_ESC_INC    = 20
+ZESC_ESCTOT_INC = 1
+ZESC_TOT_INC    = 17
+ZESC_INIT_SCALE = 7
+ZESC_INIT_ESC   = 8
+ZESC_INIT_TOT   = 12
+DET_FAILED_ML_INC = 12
+escapeScale    = 22
+escUpdateScale = 20
+Tuning obj1 improved   3.655 bpb  to   3.644 bpb 
+ZESC_ESC_INC    = 20
+ZESC_ESCTOT_INC = 0
+ZESC_TOT_INC    = 14
+ZESC_INIT_SCALE = 8
+ZESC_INIT_ESC   = 6
+ZESC_INIT_TOT   = 10
+DET_FAILED_ML_INC = 10
+escapeScale    = 20
+escUpdateScale = 15
+Tuning PAPER1 improved   2.222 bpb  to   2.221 bpb 
+ZESC_ESC_INC    = 18
+ZESC_ESCTOT_INC = 1
+ZESC_TOT_INC    = 17
+ZESC_INIT_SCALE = 7
+ZESC_INIT_ESC   = 8
+ZESC_INIT_TOT   = 15
+DET_FAILED_ML_INC = 10
+escapeScale    = 20
+escUpdateScale = 11
+Tuning PAPER2 improved   2.214 bpb  to   2.210 bpb 
+ZESC_ESC_INC    = 18
+ZESC_ESCTOT_INC = 0
+ZESC_TOT_INC    = 18
+ZESC_INIT_SCALE = 8
+ZESC_INIT_ESC   = 7
+ZESC_INIT_TOT   = 12
+DET_FAILED_ML_INC = 10
+escapeScale    = 20
+escUpdateScale = 11
+Tuning PROGC improved   2.252 bpb  to   2.250 bpb 
+ZESC_ESC_INC    = 18
+ZESC_ESCTOT_INC = 1
+ZESC_TOT_INC    = 17
+ZESC_INIT_SCALE = 7
+ZESC_INIT_ESC   = 6
+ZESC_INIT_TOT   = 10
+DET_FAILED_ML_INC = 14
+escapeScale    = 19
+escUpdateScale = 11
+Tuning PROGL improved   1.470 bpb  to   1.467 bpb 
+ZESC_ESC_INC    = 20
+ZESC_ESCTOT_INC = 1
+ZESC_TOT_INC    = 18
+ZESC_INIT_SCALE = 9
+ZESC_INIT_ESC   = 8
+ZESC_INIT_TOT   = 12
+DET_FAILED_ML_INC = 11
+escapeScale    = 19
+escUpdateScale = 14
+Tuning PROGP improved   1.474 bpb  to   1.471 bpb 
+ZESC_ESC_INC    = 18
+ZESC_ESCTOT_INC = 1
+ZESC_TOT_INC    = 17
+ZESC_INIT_SCALE = 7
+ZESC_INIT_ESC   = 7
+ZESC_INIT_TOT   = 12
+DET_FAILED_ML_INC = 20
+escapeScale    = 20
+escUpdateScale = 8
+Tuning TRANS improved   1.238 bpb  to   1.231 bpb 
+ZESC_ESC_INC    = 19
+ZESC_ESCTOT_INC = 0
+ZESC_TOT_INC    = 16
+ZESC_INIT_SCALE = 8
+ZESC_INIT_ESC   = 5
+ZESC_INIT_TOT   = 9
+DET_FAILED_ML_INC = 8
+escapeScale    = 25
+escUpdateScale = 8
+
+Tuning obj2 improved   2.224 bpb  to   2.215 bpb
+ZESC_ESC_INC    = 19
+ZESC_ESCTOT_INC = 0
+ZESC_TOT_INC    = 17
+ZESC_INIT_SCALE = 7
+ZESC_INIT_ESC   = 5
+ZESC_INIT_TOT   = 9
+DET_FAILED_ML_INC = 6
+escapeScale    = 14
+escUpdateScale = 11
+

@@ -1,0 +1,125 @@
+
+(see <> marks in all files)
+
+0. option to turn off PPMdet
+	(it's the major slowdown on pic and whatnot)
+
+1. make auto-tuning a coding option (like choose best coder)
+		(must transmit tuned settings to decoder in ppmz header)
+
+2. >>>  *** LOE needs to include PPMdet & order0 , as does UpdateC
+
+		*** switch between different LOE coders using dynamic programming;
+				adaptively detect which is better.  Very hard.
+			I could do this manually, but I'd like to learn more about
+				"dynamic programming" and "genetic algorithms"
+
+4. LZ77 pre-pass ? long min-len	(not really a pre-pass, but a
+			top-level coding pass; code a PPMQ style escape for whether
+			or not we got an LZ match)
+
+6. three ideas from CTW :
+
+	all 3 of these require a new implementation style : the PPMZ model returns a
+	table Prob[257] (prob of chars & the escape) and the actual arith-coding is
+	done outside of PPMZ.
+
+	-----------------
+
+	A. for model levels below the top one, code as :
+
+		put P[n] = prob. estimated in order n
+
+		P(x) = 1/2 P[n](x) + 1/2 Sum[higher contexts] P[n+1](x)
+
+		(this weighting accounts for the fact that we don't do
+		down-cascading updates)
+
+		(this may be most effective for the top order, where the
+		sum of higher contexts comes from the higher PPMdet contexts).
+	
+		There may be some modifications needed here:
+
+			I. don't use this when escaping? since we know one
+				of the higher contexts is unsuccessful.
+				Perhaps just don't include that context,
+				and of course exclude everything in the
+				exclude table.
+			II. don't include "bad" contexts in the Sum[contexts]
+				i.e. contexts with escape > 5 or so
+
+	B. have multiple models, and combine all models based on their
+		past rate of success.  That is, models M1..MN with successful
+		probability P1..PN , we make
+
+		M = P1 M1 + P2 M2 ...
+
+	the multiple models might be :
+
+		PPMZ models with different parameters
+		PPMZ LOE coders with different LOE methods
+		a single PPMZ model, different orders
+
+	(the first two could be used together, the third would be a different style)
+
+	C. "don't care" symbols.  The idea is that a context ABCD.. may have a
+		symbol in the middle which is random, which all the others are
+		good predictors, so we want to change ABCD.. to ABxD.. where 'x' is
+		then ignored. (note this is similar to Malcolm Taylor's work on 'geo').
+	how to implement really efficiently?  that is, without making whole new models.
+	maybe no way.  For each O(N) context, we need to add N! (or so) more contexts,
+	that is, for O(4), ABCD, we need
+
+		ABCD
+		ABCx <- order 3, drop it
+		ABxD
+		AxCD
+		xBCD
+		ABxx <- order 2, drop it
+		AxxD
+		xxCD
+		AxCx
+		xBxD
+		Axxx <- order 1, drop it
+		xBxx
+		xxCx
+		xxxD
+	
+	we then incorporate these into the LOE.  I think they would not be in the
+	usual descent order, coded by escapes, but only accessible by direct jumps
+	of the LOE.  Hmm, in that case however they would never accumulate statistics.
+	We could do forcible updates of all O(4) contexts whenever any O(4) is updated.
+
+	Note that this is equivalent to replacing 'ABCx' with 'ABCD' averaged on all D,
+	or 'ABxD' with 'ABCD' averaged on all C.  There are two problems : we don't
+	maintain an explicit tree structure, which would make this easier (trivial).
+	Also, this method breaks down for 'xBxx' where we must average on 3 symbols, which
+	may take a while.  Actually, 'xxxD' is the pathological case, because the first 3
+	make up the indexing hash, so all contexts averaged for 'xxxD' would be spread
+	around the memory space.
+
+	Also, in the true CTW, the 'don't care' are bits not full bytes.
+
+8. another model for the LOE to choose from :
+
+		code based only on how-far-from-last-occurance of various chars.
+		that is, make 256 models : M[x]
+		each M[x] is :
+
+			code x or escape, based on :
+				'how far from here was last occurance of x'
+
+		This will improve performance especially on 'geo' which has a '0'
+		occuring as every four character.
+
+		Actually, this is good for modelling lots of finite-state information,
+		such as the average length of words in text will correlated to the
+		separation of ' ', as will 70-column text correlate to the separation
+		of '\n' characters, etc.
+
+		The trick I think is not to use these as an LOE predictor, but as
+		some weighted predictor added to the normal PPM.
+
+		actually, this is 256*N different models; one model for each
+		character, and for each character, a model for each distance.
+		(up to max distance of N)

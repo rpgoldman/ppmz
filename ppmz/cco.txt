@@ -1,0 +1,5 @@
+unlimit cpu
+unlimit memoryuse
+unlimit datasize
+unlimit stacksize
+nice +19 ppmz book1 z

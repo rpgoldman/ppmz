@@ -1,0 +1,28 @@
+Notes about compilation of crblib with gcc 2.95.2
+
+
+Routines chshutil.c, crbeqlib.c, and fileutil.c could not be compiled 
+without changes.  Minimal changes were made. 
+
+inc.h was changed to remove duplicate definitions of ulong, and uint. 
+
+timer.c tries to initialize with an element that is not constant. 
+Conditional compilation was added. 
+
+huffa.a  uses assert with undefined arguments; 
+it must be compiled with -DNDEBUG
+
+cindcatr.c, crbconv.c, and equtil.c  are assuming 
+sizeof(int) == sizeof(unsigned long)
+
+lbitio.c gives warnings about lines 158, 159, and 175 for too long shifts.
+(Kerninghan, Richie chapter A7.8:  "The result is undefined if the right 
+operand is negative, or greater than or equal to the number of bits in the 
+left expression's type.") 
+
+
+ppmcoder.c (from ppmz) uses intlog2 and intlog2r.  
+So intmath.c has to compiled too...
+
+In crblib.mak better place for include files is '..'
+

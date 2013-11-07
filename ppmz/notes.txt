@@ -1,0 +1,104 @@
+
+====================================================
+
+the simplicity of LOE :
+
+	I tried the elaborate LOE scheme :
+
+	(ZCODER_P *P*zlog(P)) + (ZCODER_E *E*(zlog(E) - ZCODER_BYTE)) + 
+		(ZCODER_1P * (ESC_SCALE - P)*(zlog(E) - ZCODER_BYTE))
+
+	and ran tunes on the four parameters Zcoder_{p,e,byte,1p}
+		(note, zcoder_e = zcoder_1p = 0 reproduces "coder 9" )
+	In all cases, the best tune for this LOE resulted in performance
+	identical to coder 9 (!!) BUT with seemingly random parameter
+	values - that is, very different for each file (NOT zcoder_p = infinity!)
+
+	This is very surprising, and demonstrates the magic of coder 9
+	(the pure P LOE).
+
+	report:
+
+base : 35,0,15,15
+
+		:	:	p,e,1p,byte			: coder 9
+bib 	: 1.748 -> 1.744 : 27,3,17,15 : 1.744
+book1	: 2.225		(not tuned)		  : 2.213
+book2	: 1.877		(not tuned)		  : 1.873
+geo_reog: 4.038 -> 3.872 : 20,18,14,19: 4.033	****
+news	:		-> 2.242 : 26, 5,28,21  2.242
+obj1	: 3.661 -> 3.654 : 54,0,7,15  : 3.665
+obj2	:		-> 2.221 : 46,0,7,21  : 2.230
+paper1	: 2.223 -> 2.223 : 38,0,15,15 : 2.222
+paper2	: 2.221 -> 2.215 : 35,5,15,17 : 2.214
+pic 	: 0.792	-> 0.787 : 21,6,15,29 : 0.790
+progc 	: 2.252 -> 2.251 : 32,1,14,15 : 2.257
+progl	: 1.470 -> 1.469 : 31,1,14,20 : 1.472
+progp 	: 1.475 -> 1.474 : 26,0,28,20 : 1.477
+trans 	: 1.236 -> 1.235 : 29,1,15,20 : 1.238
+
+	*** tuning the other parameters (the ppmzesc) helps
+	a lot more than these tunings
+
+=======================================
+
+On Adaptiveness of LOE :
+
+I've been experimenting on "skewed" files (order0 random, with
+an exponential probability distribution).  Here are some
+results :
+
+10k :
+order 0 : 2.332
+order 1 : 2.345
+ppmz c9 : 2.517
+ppmz c13: 2.400
+ppmz c19: 2.415
+
+50k :
+order 0 : 2.324
+order 1 : 2.327
+ppmz c9 : 2.531
+ppmz c13: 2.381
+ppmz c19: 2.383
+
+100k :
+order 0 : 2.323
+order 1 : 2.324
+ppmz c9 : 2.512
+ppmz c13: 2.416
+ppmz c19: 2.414
+
+The LOE's for the ppmz's are :
+
+(P = MPS prob)
+(E = escape prob)
+
+c9 : P
+c13: P*log(P) + ( E + (1-P))*8
+c19: E*(log(E) + 8) + (1-P)*8
+
+The other LOE's do roughly on par with coder 9.
+ 
+These results are rather suprising and disturbing.  Concisely:
+
+ppmz c13:
+10k : 2.400
+30k : 2.362
+50k : 2.381
+80k : 2.411
+100k: 2.416
+
+For the 30k file, coder 13 gets very close to the ideal (2.33), but
+it then proceeds to get rorse for larger files.  This is actually
+no surprise.  It's because the higher orders build up more statistics
+as more bytes are seen.  Some of them are bound to be successful - and
+then we go into "is it deterministic" mode.  In a normal text file,
+deterministics are so important, that my LOE's look on any sparse
+successful high-order context as a potential determinstic, and so
+heavily favours them.  This slowly erodes the performance on a
+file like "skew".
+Clearly the LOE must sample more moments of the distribution than
+just P and E to handle this.
+
+================================================

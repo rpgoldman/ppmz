@@ -1,0 +1,21 @@
+
+The LRU options seems to hurting compression more than it should.
+
+On 'paper1' (51k bytes) compression is 2.285 (coder 0)
+with -L70000 compression is 2.300
+
+this seems ludicrous
+
+possible wierdities:
+
+	1. a bug
+
+	2. shared LRU between all orders causing other-order good stuff
+			to be flushed out
+
+	3. lots of empty context-adds causing flushing of good stuff
+			perhaps switch back to PPMZ_Scale method?
+			keep doing scale + updateLRU untill you get one cleared?
+
+the problem is its very hard to really monitor the LRU..
+

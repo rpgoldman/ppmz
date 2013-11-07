@@ -1,0 +1,17 @@
+
+bib		1.740
+book1	2.194
+book2	1.852
+geo		3.986
+news	2.226
+obj1	3.475
+obj2	2.123
+paper1	2.225
+paper2	2.193
+pic		0.755
+progc	2.253
+progl	1.477
+progp	1.459
+trans	1.245
+-----------------------
+avg		2.086
