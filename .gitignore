@@ -1,2 +1,4 @@
 crblib/libcrb.a
 *.o
+ppmz/crbinc
+ppmz/ppmz
