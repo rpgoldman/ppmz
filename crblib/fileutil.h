@@ -96,9 +96,7 @@ extern void  fputub(ubyte v,FILE *FP);
 
 /*}********** END switches to get dir.h ****************/
 
-// name clashes with stdio.h.  Seems unused, so killing this.
-// [2013/11/07:rpg]
-// extern void dprintf(const char * String, ...); // dual printf to console & pipe
+extern void xdprintf(const char * String, ...); // dual printf to console & pipe
 
 extern bool copystat(const char * tofile,const char *fmfile);
 extern bool setstat(const char * file,const struct stat *s);

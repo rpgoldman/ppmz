@@ -6,8 +6,11 @@
 #
 SHELL		= /bin/sh
 CC			= gcc
-# FIXME: added -m32.  
-CFLAGS		= -O3 -Wall -m32
+CFLAGS		= -O3 -Wall -Dunix -m32
+
+ifeq ($(UNAME_S),Darwin)
+        CCFLAGS += -I /usr/include/malloc
+endif
 
 INCLUDES	= -I..
 
@@ -33,3 +36,7 @@ libcrb.a: $(OBJS)
 clean:
 	rm -f libcrb.a *.o core *~
 
+
+# Local Variables:
+# mode: makefile
+# End:
