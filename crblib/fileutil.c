@@ -15,7 +15,7 @@
 #else
 #include <sys/utime.h>
 #endif
-
+/*
 void dprintf(const char * String, ...)
 {
 	va_list			ArgPtr;
@@ -37,6 +37,7 @@ void dprintf(const char * String, ...)
 		fprintf(stderr,TempStr);
 	}
 }
+*/
 
 ubyte * readFile(char *name)
 {
