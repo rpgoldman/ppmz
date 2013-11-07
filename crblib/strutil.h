@@ -32,7 +32,7 @@ extern char * strnchr(const char *str,short c,int len);
 extern void strtolower(char *str);
 extern void strins(char *to,const char *fm);
 	 /* strins drops fm at head of to */
-extern void strrep(char *str,char fm,char to);
+extern void strrep(unsigned char *str,char fm,char to);
 
 #ifndef IN_COMPILER
 extern int stricmp(const char *str,const char *vs);

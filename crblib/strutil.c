@@ -71,7 +71,7 @@ while(num)
 strrev(strbase);
 }
 
-void strrep(char *str,char fm,char to)
+void strrep(unsigned char *str,char fm,char to)
 {
 while( *str )
   {
