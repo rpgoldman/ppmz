@@ -6,7 +6,8 @@
 #
 SHELL		= /bin/sh
 CC			= gcc
-CFLAGS		= -O3 -Wall
+# FIXME: added -m32.  
+CFLAGS		= -O3 -Wall -m32
 
 INCLUDES	= -I..
 
