@@ -7,9 +7,15 @@
 #
 SHELL		= /bin/sh
 CC			= gcc
-CFLAGS		= -O3 -Wall -Dunix
+CFLAGS		= -O3 -Wall -Dunix -m32
+
+UNAME_S := $(shell uname -s)
 
 INCLUDES	= -I..
+
+ifeq ($(UNAME_S),Darwin)
+        INCLUDES += -I /usr/include/malloc
+endif
 
 OBJS		= main.o ppmarray.o ppmdet.o ppmz_cfg.o order0.o \
 			  ppmcoder.o ppmz.o ppmzhead.o version.o exclude.o ppmzesc.o lzpo12.o lzparray.o
