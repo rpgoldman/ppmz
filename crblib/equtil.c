@@ -130,14 +130,11 @@ while(*str)
 
 void MakeResult(char *Str,double V,int Precision)
 {
-ulong ULV,ULAV; long LV;
-char * StrV;
+ulong ULV; long LV;
 char * StrPtr;
 
-ULAV = (ulong)(mabs(V));
 ULV = (ulong)V;
 LV = (long)V;
-StrV = (char *)&ULV;
 
 if ( Precision < 1 ) Precision = 1;
 else if ( Precision > 9 ) Precision = 9;
@@ -182,7 +179,7 @@ if ( abs(V-(double)LV) < 0.0001 || abs(V-(double)ULV) < 0.0001 ) {
     {
     strcat(Str," = ");
     StrPtr = Str + strlen(Str);
-    sprintf(StrPtr,"%c",ULV);
+    sprintf(StrPtr,"%c",(char)ULV);
     }
 } else {
   char FormatStr[5];
