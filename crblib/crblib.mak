@@ -8,11 +8,14 @@ SHELL		= /bin/sh
 CC			= gcc
 CFLAGS		= -O3 -Wall -Dunix -m32
 
-ifeq ($(UNAME_S),Darwin)
-        CCFLAGS += -I /usr/include/malloc
-endif
+UNAME_S := $(shell uname -s)
 
 INCLUDES	= -I..
+
+ifeq ($(UNAME_S),Darwin)
+        INCLUDES += -I /usr/include/malloc
+endif
+
 
 OBJS		= arithc.o bbitio.o cacmari.o chshutil.o cindcatr.o crbconv.o \
 			  crbeqlib.o crc32.o equtil.o context.o fileutil.o \
