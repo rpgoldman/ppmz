@@ -7,7 +7,7 @@
 #
 SHELL		= /bin/sh
 CC			= gcc
-CFLAGS		= -O3 -Wall
+CFLAGS		= -O3 -Wall -Dunix
 
 INCLUDES	= -I..
 
