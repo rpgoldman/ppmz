@@ -12,6 +12,7 @@
 
 #ifdef unix
 #include <utime.h>
+#include <unistd.h>
 #else
 #include <sys/utime.h>
 #endif
@@ -30,11 +31,11 @@ void xdprintf(const char * String, ...)
 #else
 	if ( isatty(_fileno(stdout)) )
 #endif
-		printf(TempStr);
+		printf("%s", TempStr);
 	else
 	{
-		printf(TempStr);
-		fprintf(stderr,TempStr);
+		printf("%s", TempStr);
+		fprintf(stderr,"%s", TempStr);
 	}
 }
 
@@ -158,7 +159,7 @@ void printcommas(FILE * tofile,ulong num)
 {
 char tempstr[20];
 strcommas(tempstr,num);
-fprintf(tofile,tempstr);
+fprintf(tofile,"%s",tempstr);
 }
 
 void CutEndPath(char *Path)
