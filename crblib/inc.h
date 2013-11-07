@@ -1,10 +1,18 @@
 #ifndef CRB_INC_H
 #define CRB_INC_H
 
+#if (__APPLE__ && __MACH__)
+#define unix 1
+#endif
+
 /*types:*/
 #ifndef unix
 typedef unsigned int uint;
 typedef unsigned long  ulong;
+#endif
+#if (__APPLE__ && __MACH__)
+#include <sys/types.h>
+typedef u_long ulong;
 #endif
 typedef unsigned short uword;
 typedef unsigned char  ubyte;
