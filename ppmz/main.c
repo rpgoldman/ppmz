@@ -389,6 +389,10 @@ if ( DoAllCoders ) {
       PrecondArray,PrecondArrayLen,DoLRU);
 
     DiffClock = clock() - DiffClock;
+	if (DiffClock == 0) {
+		// Assume the smallest unit of time is one unit.
+		DiffClock = 1;
+	}
 
 	if ( OutFileLen > RT_LiteralArrayLen ) OutFileLen = RT_LiteralArrayLen+1;
     
@@ -410,6 +414,10 @@ if ( DoAllCoders ) {
       PPM_Writers[CoderNum],PPM_Inits[CoderNum]);
 
     DiffClock = clock() - DiffClock;
+	if (DiffClock == 0) {
+		// Assume the smallest unit of time is one unit.
+		DiffClock = 1;
+	}
     
     if ( !OutFileLen ) CleanUp("LZP_EncodeArray failed!");
     
@@ -685,6 +693,10 @@ if ( ! GotDecompressFlag )
     }
 
   DiffClock  = clock() - DiffClock;
+  if (DiffClock == 0) {
+    // Assume the smallest unit of time is one unit.
+    DiffClock = 1;
+  }
 
   if ( !PPMPackedLen ) CleanUp("PPMcoder_EncodeArray failed!");
 
@@ -733,6 +745,10 @@ else
 			  PrecondArray,PrecondArrayLen,DoLRU,DeCompareArray);
 		}
 		DiffClock  = clock() - DiffClock;
+		if (DiffClock == 0) {
+			// Assume the smallest unit of time is one unit.
+			DiffClock = 1;
+		}
 
 		if ( !Ok ) CleanUp("PPMcoder_DecodeArray failed!");
 	}
