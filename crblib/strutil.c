@@ -170,6 +170,107 @@ while(fmlen--) *to++ = *fm++;
 
 }
 
+/* Count how many bytes we see from the start of the pointer until we reach
+	a zero byte. This is like strlen(), but typed for ubyte memory.
+*/
+int blocklen(ubyte *ptr) 
+{
+	int count = 0;
+
+	while(*ptr++ != 0x00) {
+		count++;
+	}
+
+	return count;
+}
+
+/* Copy the ubyte region delimited by a 0x00 byte from src into dst,
+	including the terminating 0x00 byte. This is like strcpy(), but typed
+	for ubyte memory.
+*/
+ubyte* blockcpy(void *vdst, void *vsrc) 
+{
+	ubyte *dst = (ubyte*)vdst;
+	ubyte *src = (ubyte*)vsrc;
+
+	while((*dst++ = *src++));
+
+	return (ubyte*)vdst; /* the original vdst pointer */
+}
+
+/* With 0x00 being the end of memory sentinel, compare the blocks of
+	memory as ubytes similarly to how strcmp() does the work.
+	Take care to not beyond the sentinel in any array.
+*/
+int blockcmp(void *vs1, void *vs2)
+{
+	ubyte *s1 = (ubyte*)vs1;
+	ubyte *s2 = (ubyte*)vs2;
+	
+	while(*s1 && *s2) {
+		if (*s1 < *s2) {
+			return -1;
+		}
+		if (*s1 > *s2) {
+			return 1;
+		}
+		s1++;
+		s2++;
+	}
+	if (*s1 == 0x00 && *s2 != 0x00) {
+		return -1;
+	}
+	if (*s2 == 0x00 && *s1 != 0x00) {
+		return 1;
+	}
+
+	/* so s1 and s2 must be 0x00, meaning they were the same length.
+		since we didn't find any problems before, they must also be equal.
+	*/
+	return 0;
+}
+
+int blockncmp(void *vs1, void *vs2, int len)
+{
+	ubyte *s1 = (ubyte*)vs1;
+	ubyte *s2 = (ubyte*)vs2;
+	int index = 0;
+	
+	while(*s1 && *s2 && index < len) {
+		if (*s1 < *s2) {
+			return -1;
+		}
+		if (*s1 > *s2) {
+			return 1;
+		}
+		s1++;
+		s2++;
+		index++;
+	}
+
+	if (index == len) {
+		/* we didn't find a disparity, but ran out of bytes to check due
+			processing all of the len bytes.
+		*/
+		return 0;
+	} 
+
+	/* if index < len, then we need to check the boundary conditions of the
+		memory blocks, maybe one or both blocks was much shorter than len */
+
+	if (*s1 == 0x00 && *s2 != 0x00) {
+		return -1;
+	}
+	if (*s2 == 0x00 && *s1 != 0x00) {
+		return 1;
+	}
+
+	/* so s1 and s2 must be 0x00, meaning they were the same length.
+		since we didn't find any problems before, they must also be equal.
+	*/
+	return 0;
+}
+
 #ifndef IN_COMPILER
 char *strupr(char *str)
 {

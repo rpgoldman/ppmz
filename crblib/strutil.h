@@ -26,6 +26,12 @@ extern char * skipwhitespace(char * str);
 
 extern void strcommas(char *str,ulong num);
 
+/* str*() like functions, but for the ubyte memory region */
+extern int blocklen(ubyte *ptr);
+ubyte* blockcpy(void *vdst, void *vsrc);
+int blockcmp(void *s1, void *s2);
+int blockncmp(void *s1, void *s2, int len);
+
 extern char * strichr(const char *str,short c);
 extern char * stristr(const char *bigstr,const char *substr);
 extern char * strnchr(const char *str,short c,int len);

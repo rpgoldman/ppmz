@@ -25,7 +25,8 @@ struct EqData
   ubyte *EQ;          int EQSize;
   double *PreStored;  int PreStoredSize;
   double *Store;      int StoreSize;
-  ubyte *StrEq;        int StrEqSize;
+  ubyte *StrEq;       int StrEqSize;
+
   ubyte *WrkBase;
   ubyte *WrkPtr;
   ubyte *RepPtr;

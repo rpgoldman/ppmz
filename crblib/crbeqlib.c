@@ -93,6 +93,7 @@ ORDER OF OPS:
 #include <stdio.h>
 
 #include <crblib/inc.h>
+#include <crblib/crbeqlib.h>
 #include <crblib/memutil.h>
 #include <crblib/strutil.h>
 
@@ -194,40 +195,6 @@ const static ubyte STOREubyte = '£';
 
 #define BLANK   255   /*optimizer temp code*/
 
-struct EqData
-  {
-  double Result;
-  double X,Y,Z,T,H;
-  int ParseError;
-  ubyte *ErrorMess;
-  ubyte **DebugMess;
-
-  double *UserVar; int NumUserVars;
-  
-  ubyte *EQ;          int EQSize;
-  double *PreStored;  int PreStoredSize;
-  double *Store;      int StoreSize;
-  ubyte *StrEq;       int StrEqSize;
-
-  ubyte *WrkBase;
-  ubyte *WrkPtr;
-  ubyte *RepPtr;
-  int DebugMessNext;
-  int Flags;
-  int CurPreStoreNum;
-  int CurStoreNum;  
-  int CPos;
-  int SLen;
-
-  ubyte **Tokens;
-  int TokNum;
-  ubyte *TokWork;
-  int TokWorkCnt;
-  ubyte **OrdTerms;
-  ubyte *OrdPri;
-  ubyte *OrdWork;
-  };
-
 /*protos:*/
 /*for the user:*/
 double ValCRBEQ(struct EqData *d);
@@ -295,7 +262,7 @@ if (D->Flags & DEBUG) {
   Ptr = D->StrEq;
 
   if ( *Ptr == '-' ) {
-    StrBump(Ptr,(long)0,(long)(strlen(Ptr)+1));
+    StrBump(Ptr,(long)0,(long)(blocklen(Ptr)+1));
 
     *Ptr++ = '0' ;
     *Ptr++ = '-' ;
@@ -311,7 +278,7 @@ if (D->Flags & DEBUG) {
   
       if ( *Ptr == '-' )
         {
-        StrBump(Ptr,(long)0,(long)(strlen(Ptr)+1));
+        StrBump(Ptr,(long)0,(long)(blocklen(Ptr)+1));
       
         *Ptr++ = '0' ;
         *Ptr++ = '-' ;
@@ -344,17 +311,17 @@ if (D->Flags & DEBUG) {
 
   Ptr = D->StrEq;
   while(*Ptr) {
-	if ( strncmp(Ptr,"FRAC",4) == 0 ) {
+	if ( blockncmp(Ptr,"FRAC",4) == 0 ) {
 		ubyte * tp;
-		memmove(Ptr,Ptr+4,strlen(Ptr+4)+1);
+		memmove(Ptr,Ptr+4,blocklen(Ptr+4)+1);
 		tp = CorrespondP(Ptr);
 /*(*/	if ( *tp != ')' ) {
 			D->ParseError=1;
-			strcpy(D->ErrorMess,"Expected pair of paren'ed items after 'frac'");
+			blockcpy(D->ErrorMess,"Expected pair of paren'ed items after 'frac'");
 			goto DonePreParse;
 		}
 		tp++;
-		memmove(tp+1,tp,strlen(tp)+1);
+		memmove(tp+1,tp,blocklen(tp)+1);
 		*tp = '/';
 	} else Ptr++;
   }
@@ -370,13 +337,13 @@ D->OrdTerms=NULL;
 if ( (D->TokWork=AllocMem(1024,MEMF_ANY)) == NULL)
   {
   D->ParseError=1;
-  strcpy(D->ErrorMess,"Couldn't malloc tokwork!");
+  blockcpy(D->ErrorMess,"Couldn't malloc tokwork!");
   goto DonePreParse;
   }
 if ( (D->Tokens=AllocMem(NUMPREPARSETOKENS*sizeof(ubyte *),MEMF_ANY|MEMF_CLEAR)) == NULL)
   {
   D->ParseError=1;
-  strcpy(D->ErrorMess,"Couldn't malloc tokwork!");
+  blockcpy(D->ErrorMess,"Couldn't malloc tokwork!");
   goto DonePreParse;
   }
 for (i=0;i<NUMPREPARSETOKENS;i++)
@@ -384,26 +351,26 @@ for (i=0;i<NUMPREPARSETOKENS;i++)
   if ( (D->Tokens[i]=AllocMem(STRSIZE,MEMF_ANY)) == NULL)
     {
     D->ParseError=1;
-    strcpy(D->ErrorMess,"Couldn't malloc tokens!");
+    blockcpy(D->ErrorMess,"Couldn't malloc tokens!");
     goto DonePreParse;
     }
   }
 if ( (D->OrdPri = AllocMem(NUMORDTERMS,MEMF_ANY)) == NULL)
   {
   D->ParseError=1;
-  strcpy(D->ErrorMess,"Couldn't malloc OrdPri!");
+  blockcpy(D->ErrorMess,"Couldn't malloc OrdPri!");
   goto DonePreParse;
   }
 if ( (D->OrdWork =AllocMem(1024,MEMF_ANY)) == NULL)
   {
   D->ParseError=1;
-  strcpy(D->ErrorMess,"Couldn't malloc ordwork!");
+  blockcpy(D->ErrorMess,"Couldn't malloc ordwork!");
   goto DonePreParse;
   }
 if ( (D->OrdTerms=AllocMem(NUMORDTERMS*sizeof(ubyte *),MEMF_ANY|MEMF_CLEAR)) == NULL)
   {
   D->ParseError=1;
-  strcpy(D->ErrorMess,"Couldn't malloc ordterms!");
+  blockcpy(D->ErrorMess,"Couldn't malloc ordterms!");
   goto DonePreParse;
   }
 for (i=0;i<NUMORDTERMS;i++)
@@ -411,12 +378,12 @@ for (i=0;i<NUMORDTERMS;i++)
   if ( (D->OrdTerms[i]=AllocMem(STRSIZE,MEMF_ANY)) == NULL)
     {
     D->ParseError=1;
-    strcpy(D->ErrorMess,"Couldn't malloc the terms!");
+    blockcpy(D->ErrorMess,"Couldn't malloc the terms!");
     goto DonePreParse;
     }
   }
 
-strcpy(D->Tokens[0],D->StrEq);
+blockcpy(D->Tokens[0],D->StrEq);
 D->TokNum=1;
 Eq2Tok(D,D->Tokens[0]);
 
@@ -466,7 +433,7 @@ ubyte *StartP,*EndP;
 int plen,eqlen;
 int startpc,endpc;
 
-eqlen=strlen(eq);
+eqlen=blocklen(eq);
 while (StartP=strchr(eq,'('))
   {
   EndP=CorrespondP(StartP);
@@ -553,7 +520,7 @@ for(k=0;k<4;k++)
     }
   }
 wc--; D->OrdWork[wc]=0;
-strcpy(in,D->OrdWork);
+blockcpy(in,D->OrdWork);
 
 wc=0;
 t=in;
@@ -599,7 +566,7 @@ do
   wc++;
   } while(Breaker);
 
-strcpy(in,D->OrdWork);
+blockcpy(in,D->OrdWork);
 }
 
 double ValCRBEQ(struct EqData *d)
@@ -669,7 +636,7 @@ while(1)
       c= *EQ++;
       if ( c > d->NumUserVars || d->UserVar == NULL )
         {
-        strcpy(d->ErrorMess,"Invalid UserVar request");
+        blockcpy(d->ErrorMess,"Invalid UserVar request");
         d->ParseError = 1;
         return(0);
         }
@@ -1255,12 +1222,12 @@ void AddDebugMess(struct EqData *D, char *S)
 
 if (D->DebugMess[D->DebugMessNext]=AllocMem(STRSIZE,MEMF_ANY))
   {
-  strcpy(D->DebugMess[D->DebugMessNext],S);
+  blockcpy(D->DebugMess[D->DebugMessNext],S);
   D->DebugMessNext++;
   if (D->DebugMessNext == MAXDEBUGMESS)
     {
     D->ParseError=1;
-    strcpy(D->ErrorMess,"DebugMess OverFlow!!");
+    blockcpy(D->ErrorMess,"DebugMess OverFlow!!");
     }
   }
 
@@ -1290,7 +1257,7 @@ if ( (d=AllocMem(sizeof(struct EqData),MEMF_ANY|MEMF_CLEAR)) == NULL)
 d->EQSize             = WRKSIZE;
 d->PreStoredSize      =MAXNUMPRESTORES*sizeof(double);
 d->StoreSize          =MAXNUMSTORES*sizeof(double);
-d->StrEqSize          = strlen(inStrEq) * 64 + 1024;
+d->StrEqSize          = blocklen(inStrEq) * 64 + 1024;
 d->Result             =0;
 d->X=d->Y=d->Z        =0;
 d->H 					= 0.000001;
@@ -1314,11 +1281,11 @@ d->SLen               =0;
 if (!d->DebugMess || !d->WrkBase || !d->EQ || !d->Store || !d->PreStored || !d->ErrorMess || !d->StrEq )
   {
   d->ParseError=1;
-  if (d->ErrorMess) strcpy(d->ErrorMess,"Couldn't AllocMem CRBEQ data!");
+  if (d->ErrorMess) blockcpy(d->ErrorMess,"Couldn't AllocMem CRBEQ data!");
   goto DoneMake;
   }
 
-strcpy(d->StrEq,inStrEq);
+blockcpy(d->StrEq,inStrEq);
 d->EQ[0]=DONE;
 
 if (d->StrEq[0]==0)
@@ -1336,7 +1303,7 @@ if (d->StrEq[0]==0)
   if ( (int)tchar != (int)tubyte )
     {
     d->ParseError=1;
-    strcpy(d->ErrorMess,"chars not unsigned.  Recompile.");
+    blockcpy(d->ErrorMess,"chars not unsigned.  Recompile.");
     goto DoneMake;
     }
 
@@ -1346,7 +1313,7 @@ if (d->StrEq[0]==0)
 if ( UnmatchedParenthesis(d->StrEq) )
   {
   d->ParseError=1;
-  strcpy(d->ErrorMess,"Parenthesese don't match!");
+  blockcpy(d->ErrorMess,"Parenthesese don't match!");
   goto DoneMake;
   }
 
@@ -1374,7 +1341,7 @@ if (d->ParseError)
   goto DoneMake;
   }
 
-d->SLen=strlen(d->StrEq);
+d->SLen=blocklen(d->StrEq);
 memcpy(d->WrkBase,d->StrEq,d->SLen+1);
 
 while(SimplifyEQ(d))
@@ -1382,7 +1349,7 @@ while(SimplifyEQ(d))
   if (d->CPos > (d->EQSize - 50))
     {
     d->ParseError=1;
-    strcpy(d->ErrorMess,"CRBEQ overflow!");
+    blockcpy(d->ErrorMess,"CRBEQ overflow!");
     }
   if (d->ParseError)
     {
@@ -1583,26 +1550,26 @@ while ((d->WrkPtr-d->WrkBase)<d->SLen && (*d->WrkPtr!=')' || *(d->WrkPtr-1)==STO
     i=0;
     d->RepPtr=d->WrkPtr;
 
-         if (strncmp(d->WrkPtr,"ABS" ,3)==0) { i=ABS;  d->WrkPtr+=3; }
-    else if (strncmp(d->WrkPtr,"LOG" ,3)==0) { i=LOG;  d->WrkPtr+=3; }
-    else if (strncmp(d->WrkPtr,"LN"  ,2)==0) { i=LN;   d->WrkPtr+=2; }
-    else if (strncmp(d->WrkPtr,"L2"  ,2)==0) { i=L2;   d->WrkPtr+=2; }
-    else if (strncmp(d->WrkPtr,"SQRT",4)==0) { i=SQRT; d->WrkPtr+=4; }
-    else if (strncmp(d->WrkPtr,"SINH",4)==0) { i=SINH; d->WrkPtr+=4; }
-    else if (strncmp(d->WrkPtr,"COSH",4)==0) { i=COSH; d->WrkPtr+=4; }
-    else if (strncmp(d->WrkPtr,"TANH",4)==0) { i=TANH; d->WrkPtr+=4; }
-    else if (strncmp(d->WrkPtr,"ASINH",5)==0) { i=ASINH; d->WrkPtr+=5; }
-    else if (strncmp(d->WrkPtr,"ACOSH",5)==0) { i=ACOSH; d->WrkPtr+=5; }
-    else if (strncmp(d->WrkPtr,"ATANH",5)==0) { i=ATANH; d->WrkPtr+=5; }
-    else if (strncmp(d->WrkPtr,"SIN" ,3)==0) { i=SIN;  d->WrkPtr+=3; }
-    else if (strncmp(d->WrkPtr,"COS" ,3)==0) { i=COS;  d->WrkPtr+=3; }
-    else if (strncmp(d->WrkPtr,"TAN" ,3)==0) { i=TAN;  d->WrkPtr+=3; }
-    else if (strncmp(d->WrkPtr,"ASIN",4)==0) { i=ASIN; d->WrkPtr+=4; }
-    else if (strncmp(d->WrkPtr,"ACOS",4)==0) { i=ACOS; d->WrkPtr+=4; }
-    else if (strncmp(d->WrkPtr,"ATAN",4)==0) { i=ATAN; d->WrkPtr+=4; }
-    else if (strncmp(d->WrkPtr,"LINT",4)==0) { i=LINT; d->WrkPtr+=4; }
-    else if (strncmp(d->WrkPtr,"GINT",4)==0) { i=GINT; d->WrkPtr+=4; }
-    else if (strncmp(d->WrkPtr,"RINT",4)==0) { i=RINT; d->WrkPtr+=4; }
+         if (blockncmp(d->WrkPtr,"ABS" ,3)==0) { i=ABS;  d->WrkPtr+=3; }
+    else if (blockncmp(d->WrkPtr,"LOG" ,3)==0) { i=LOG;  d->WrkPtr+=3; }
+    else if (blockncmp(d->WrkPtr,"LN"  ,2)==0) { i=LN;   d->WrkPtr+=2; }
+    else if (blockncmp(d->WrkPtr,"L2"  ,2)==0) { i=L2;   d->WrkPtr+=2; }
+    else if (blockncmp(d->WrkPtr,"SQRT",4)==0) { i=SQRT; d->WrkPtr+=4; }
+    else if (blockncmp(d->WrkPtr,"SINH",4)==0) { i=SINH; d->WrkPtr+=4; }
+    else if (blockncmp(d->WrkPtr,"COSH",4)==0) { i=COSH; d->WrkPtr+=4; }
+    else if (blockncmp(d->WrkPtr,"TANH",4)==0) { i=TANH; d->WrkPtr+=4; }
+    else if (blockncmp(d->WrkPtr,"ASINH",5)==0) { i=ASINH; d->WrkPtr+=5; }
+    else if (blockncmp(d->WrkPtr,"ACOSH",5)==0) { i=ACOSH; d->WrkPtr+=5; }
+    else if (blockncmp(d->WrkPtr,"ATANH",5)==0) { i=ATANH; d->WrkPtr+=5; }
+    else if (blockncmp(d->WrkPtr,"SIN" ,3)==0) { i=SIN;  d->WrkPtr+=3; }
+    else if (blockncmp(d->WrkPtr,"COS" ,3)==0) { i=COS;  d->WrkPtr+=3; }
+    else if (blockncmp(d->WrkPtr,"TAN" ,3)==0) { i=TAN;  d->WrkPtr+=3; }
+    else if (blockncmp(d->WrkPtr,"ASIN",4)==0) { i=ASIN; d->WrkPtr+=4; }
+    else if (blockncmp(d->WrkPtr,"ACOS",4)==0) { i=ACOS; d->WrkPtr+=4; }
+    else if (blockncmp(d->WrkPtr,"ATAN",4)==0) { i=ATAN; d->WrkPtr+=4; }
+    else if (blockncmp(d->WrkPtr,"LINT",4)==0) { i=LINT; d->WrkPtr+=4; }
+    else if (blockncmp(d->WrkPtr,"GINT",4)==0) { i=GINT; d->WrkPtr+=4; }
+    else if (blockncmp(d->WrkPtr,"RINT",4)==0) { i=RINT; d->WrkPtr+=4; }
     else d->WrkPtr++;
 
     if (i) {
@@ -1860,7 +1827,7 @@ register ubyte *t;
 
 if (d->RepPtr==NULL)
   {
-  strcpy(d->ErrorMess,"Error: RepPtr is NULL in ReplaceMade!");
+  blockcpy(d->ErrorMess,"Error: RepPtr is NULL in ReplaceMade!");
   d->ParseError=1;
   return;
   }
@@ -2094,7 +2061,7 @@ numbuf[i]=0;
 
 if (i==40)
   {
-  strcpy(d->ErrorMess,"Overflow in ValNumeric: number is longer than 40 ubyteacters!");
+  blockcpy(d->ErrorMess,"Overflow in ValNumeric: number is longer than 40 ubyteacters!");
   d->ParseError=1;
   return(0);
   }
