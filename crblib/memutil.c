@@ -1,7 +1,21 @@
 #include <crblib/inc.h>
 #include <crblib/memutil.h>
 
-static ulong NullVall = 0; /* should never be touched */
+/* 
+	So, does the comment mean:
+		"This value of zero should never be changed?"
+	or does it mean:
+		"This memory space should never be written to?"
+
+	There is no use of this variable name anywhere in the code
+	but I can't resolve the ambiguity of the comment.  I'll mark
+	this volatile so that the compiler absolutely won't get rid of
+	it. It'll keep quiet that noone is using this variable. Sigh.
+	I feel like I should just elide this line of code....
+
+	-psilord 2013/11/08
+*/
+static volatile ulong NullVall = 0; /* should never be touched */
 
 int whichByteDiff(ubyte *buf1,ubyte *buf2)
 {
