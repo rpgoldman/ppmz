@@ -142,7 +142,7 @@ return;
 
 void Order0_DecodeC(struct Order0Info * O0I,long * SymbolPtr,exclusion * Exclusion)
 {
-long TargetProb,LowProb,TotProb,HighProb,i;
+long TargetProb,LowProb,TotProb,HighProb = 0,i;
 long * CharCounts;
 long Symbol,NumSymbols;
 
