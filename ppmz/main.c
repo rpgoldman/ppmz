@@ -35,8 +35,13 @@ see ppmzhead.c for details
 #define DEFAULT_OUT_ENC "ram:ppmz.enc"
 #define DEFAULT_OUT_DEC "ram:ppmz.dec"
 #else
+#if defined(unix)
+#define DEFAULT_OUT_ENC "ppmz.enc"
+#define DEFAULT_OUT_DEC "ppmz.dec"
+#else
 #define DEFAULT_OUT_ENC "r:\\ppmz.enc"
 #define DEFAULT_OUT_DEC "r:\\ppmz.dec"
+#endif
 #endif
 
 #define RAWARRAY_PREPAD 1781
