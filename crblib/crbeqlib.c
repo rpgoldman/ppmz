@@ -444,7 +444,7 @@ while (StartP=strchr(eq,'('))
   endpc=EndP-eq;
   StrBump(eq,(long)startpc,(long)eqlen); eqlen++; endpc++;
   eq[eqlen]=0;
-  sprintf(numbuf,"%d",D->TokNum);
+  sprintf((char*)numbuf,"%d",D->TokNum);
   eq[startpc]=STOREubyte; startpc++;
   eq[startpc]=numbuf[0]; startpc++;
   if (numbuf[1]) { eq[startpc]=numbuf[1]; startpc++; }
@@ -895,7 +895,7 @@ while(1)
       c= *EQ++; 
       strcpy(Out,"PRESTORED: b = [");
       OutT=Out+strlen(Out);
-      sprintf(Out,"%d",c);
+      sprintf((char*)Out,"%d",c);
       strcat(Out,"] = ");
       OutT=Out+strlen(Out);
       gcvt(d->PreStored[c],10,OutT);
@@ -905,7 +905,7 @@ while(1)
       c= *EQ++;
       strcpy(Out,"FMSTORE: b = [");
       OutT=Out+strlen(Out);
-      sprintf(OutT,"%d",c);
+      sprintf((char*)OutT,"%d",c);
       strcat(Out,"]");
       AddDebugMess(d,Out);
       break;
@@ -913,7 +913,7 @@ while(1)
       c= *EQ++;
       strcpy(Out,"TOSTORE: [");
       OutT=Out+strlen(Out);
-      sprintf(OutT,"%d",c);
+      sprintf((char*)OutT,"%d",c);
       strcat(Out,"] = a");
       AddDebugMess(d,Out);
       break;
@@ -921,7 +921,7 @@ while(1)
       c= *EQ++;
       strcpy(Out,"FMUSERVAR: b = [");
       OutT=Out+strlen(Out);
-      sprintf(OutT,"%d",c);
+      sprintf((char*)OutT,"%d",c);
       strcat(Out,"]");
       AddDebugMess(d,Out);
       break;
@@ -1329,7 +1329,7 @@ if (d->Flags & DEBUG)
   {
   if ( (MallocWork=AllocMem(STRSIZE,MEMF_ANY)) )
     {
-    sprintf(MallocWork,"Made: %s",d->StrEq);
+    sprintf((char*)MallocWork,"Made: %s",d->StrEq);
     AddDebugMess(d,MallocWork);
     FreeMem(MallocWork,STRSIZE);
     }
@@ -1630,7 +1630,7 @@ if (lt)
   else if ( i == '~' ) j = PROG_XOR;
   else
     {
-    sprintf(d->ErrorMess,"Expected programming operator ,found: %c",*d->WrkPtr);
+    sprintf((char*)d->ErrorMess,"Expected programming operator ,found: %c",*d->WrkPtr);
     d->ParseError=1;
     return(0);
     }
@@ -1668,7 +1668,7 @@ if (lt)
   d->EQ[d->CPos]=BtoA; d->CPos++;
   if (*d->WrkPtr!='^')
     {
-    sprintf(d->ErrorMess,"Expected exponential '^',found: %c!",*d->WrkPtr);
+    sprintf((char*)d->ErrorMess,"Expected exponential '^',found: %c!",*d->WrkPtr);
     d->ParseError=1;
     return(0);
     }
@@ -1711,7 +1711,7 @@ if (lt)
   d->EQ[d->CPos]=BtoA; d->CPos++;
   if (*d->WrkPtr!='*' && *d->WrkPtr!='/')
     {
-    sprintf(d->ErrorMess,"Expected multiplication or division ,found: %c",*d->WrkPtr);
+    sprintf((char*)d->ErrorMess,"Expected multiplication or division ,found: %c",*d->WrkPtr);
     d->ParseError=1;
     return(0);
     }
@@ -1753,7 +1753,7 @@ if (lt)
   d->EQ[d->CPos]=BtoA; d->CPos++;
   if (*d->WrkPtr!='+' && *d->WrkPtr!='-')
     {
-    sprintf(d->ErrorMess,"Expected addition or subtration ,found: %c",*d->WrkPtr);
+    sprintf((char*)d->ErrorMess,"Expected addition or subtration ,found: %c",*d->WrkPtr);
     d->ParseError=1;
     return(0);
     }
@@ -1855,7 +1855,7 @@ if (d->RepPtr != d->WrkBase)
 d->CurStoreNum++;
 if (d->CurStoreNum==MAXNUMSTORES) 
   {
-  sprintf(d->ErrorMess,"STORE OVERFLOW: more than %d runtime stores!\n",MAXNUMSTORES); 
+  sprintf((char*)d->ErrorMess,"STORE OVERFLOW: more than %d runtime stores!\n",MAXNUMSTORES); 
   d->ParseError=1;
   }
 
@@ -1906,7 +1906,7 @@ else if (*d->WrkPtr== 0x27) /* ' */
 
   if ( (d->WrkPtr - WrkPtrBase) > 6 )
     {
-    sprintf(d->ErrorMess,"Too many members in string: found: %s",WrkPtrBase);
+    sprintf((char*)d->ErrorMess,"Too many members in string: found: %s",WrkPtrBase);
     d->ParseError=1;
     return;
     }
@@ -1917,7 +1917,7 @@ else if (*d->WrkPtr== 0x27) /* ' */
   d->CurPreStoreNum++;
   if (d->CurPreStoreNum==MAXNUMPRESTORES) 
     {
-    sprintf(d->ErrorMess,"PreStore overflow: more than %d static numbers!",MAXNUMPRESTORES);
+    sprintf((char*)d->ErrorMess,"PreStore overflow: more than %d static numbers!",MAXNUMPRESTORES);
     d->ParseError=1;  
     return;
     }
@@ -1940,7 +1940,7 @@ else if (*d->WrkPtr== '"')
 
   if ( (d->WrkPtr - WrkPtrBase) > 6 )
     {
-    sprintf(d->ErrorMess,"Too many members in string: found: %s",WrkPtrBase);
+    sprintf((char*)d->ErrorMess,"Too many members in string: found: %s",WrkPtrBase);
     d->ParseError=1;
     return;
     }
@@ -1951,7 +1951,7 @@ else if (*d->WrkPtr== '"')
   d->CurPreStoreNum++;
   if (d->CurPreStoreNum==MAXNUMPRESTORES) 
     {
-    sprintf(d->ErrorMess,"PreStore overflow: more than %d static numbers!",MAXNUMPRESTORES);
+    sprintf((char*)d->ErrorMess,"PreStore overflow: more than %d static numbers!",MAXNUMPRESTORES);
     d->ParseError=1;  
     return;
     }
@@ -1984,7 +1984,7 @@ else if (*d->WrkPtr== '`')
       Out = *(WrkPtrBase+1);
       break;
     default:
-      sprintf(d->ErrorMess,"expected token, got: %s",WrkPtrBase);
+      sprintf((char*)d->ErrorMess,"expected token, got: %s",WrkPtrBase);
       d->ParseError=1;
       return;
     }
@@ -1995,7 +1995,7 @@ else if (*d->WrkPtr== '`')
   d->CurPreStoreNum++;
   if (d->CurPreStoreNum==MAXNUMPRESTORES) 
     {
-    sprintf(d->ErrorMess,"PreStore overflow: more than %d static numbers!",MAXNUMPRESTORES);
+    sprintf((char*)d->ErrorMess,"PreStore overflow: more than %d static numbers!",MAXNUMPRESTORES);
     d->ParseError=1;  
     return;
     }
@@ -2015,7 +2015,7 @@ else
   else if (*d->WrkPtr=='P'&&*(d->WrkPtr+1)=='I') { t=PI; d->WrkPtr+=2; }
   else
     {
-    sprintf(d->ErrorMess,"Expected term! found: %c",*d->WrkPtr);
+    sprintf((char*)d->ErrorMess,"Expected term! found: %c",*d->WrkPtr);
     d->ParseError=1;
     return;
     }
@@ -2026,7 +2026,7 @@ else
   d->CurPreStoreNum++;
   if (d->CurPreStoreNum==MAXNUMPRESTORES) 
     {
-    sprintf(d->ErrorMess,"PreStore overflow: more than %d static numbers!",MAXNUMPRESTORES);
+    sprintf((char*)d->ErrorMess,"PreStore overflow: more than %d static numbers!",MAXNUMPRESTORES);
     d->ParseError=1;  
     return;
     }
