@@ -102,7 +102,6 @@ typedef struct PPMDinfoStruct
 PPMDinfo * PPMdet_Init(arithInfo * ari)
 {
 PPMDinfo * PPMDI;
-int i;
 
 if ( (PPMDI = new(PPMDinfo)) == NULL )
   return(NULL);
@@ -261,9 +260,21 @@ return(gotContext);
 
 /****************** ****************/
 
+/* Uh... apparently, this structure was ignored in its definition by the
+	author of this program because they believed it wasn't important.
+	-psilord 2013-11-08
+*/
+struct PPMdetInfo { };
+
+/* However, lots of places call this function and pass it stuff that will
+	get ignored.
+	-psilord 2013-11-08
+*/
 void PPMdet_DecodeGotC(struct PPMdetInfo * PPMDI,long GotC)
 {
 /* ne fait rien */
+PPMDI = PPMDI;
+GotC = GotC;
 }
 
 bool PPMdet_EncodeC(PPMDinfo * PPMDI,long gotC,ubyte *string,exclusion * Exclusion)

@@ -451,7 +451,6 @@ return(len);
 
 void LZPo12_WriteML(LZPo12info * LZPI,ulong len,ulong index,ulong lastML)
 {
-long origLen;
 ulong escP,totP;
 
   escP = LZPI->escCounts[index];

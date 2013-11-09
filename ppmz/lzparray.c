@@ -41,7 +41,7 @@ long LZP_EncodeArray(ubyte * RawArray,
   PPM_WriteFunc PPM_Write,PPM_InitFunc PPM_Init)
 {
 ubyte *CurRawArrayPtr;
-long CurRawFileLen,i,OutFileLen;
+long CurRawFileLen,OutFileLen;
 ulong Context,Context2;
 struct PPMcoderInfo * PPMCI;
 arithInfo * ari;
@@ -142,7 +142,7 @@ bool LZP_DecodeArray(ubyte * RawArray,
   PPM_ReadFunc PPM_Read,PPM_InitFunc PPM_Init)
 {
 ubyte *CurRawArrayPtr;
-long CurRawFileLen,i;
+long CurRawFileLen;
 ulong Context,Context2;
 struct PPMcoderInfo * PPMCI;
 arithInfo * ari;
@@ -202,7 +202,8 @@ while( CurRawFileLen < RawArrayLen )
     {
     Context2 = getulong(CurRawArrayPtr - 8);
     Context  = getulong(CurRawArrayPtr - 4);
-    *CurRawArrayPtr++ = PPM_Read(PPMCI,Context,Context2,CurRawArrayPtr);
+    *CurRawArrayPtr = PPM_Read(PPMCI,Context,Context2,CurRawArrayPtr);
+	CurRawArrayPtr++;
     CurRawFileLen ++;
     }
 

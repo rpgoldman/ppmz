@@ -38,7 +38,6 @@ return(E);
 
 void resetExclusion(exclusion * E)
 {
-int i;
 MemClearFast(E->table,E->tableLongLen);
 E->counter = 1;
 }

@@ -22,6 +22,7 @@ see ppmzhead.c for details
 #include <crblib/fileutil.h>
 #include <crblib/runtrans.h>
 
+#include "lzparray.h"
 #include "ppmcoder.h"
 #include "ppmarray.h"
 #include "ppmzhead.h"
@@ -65,11 +66,11 @@ void CleanUp(char * ExitMess);
 
 /************** functions: *****************/
 
-void main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-clock_t DiffClock;
+clock_t DiffClock = 0;
 bool GotDecompressFlag = 0;
-ulong MadeCRC,ReadCRC;
+ulong MadeCRC,ReadCRC = 0;
 ubyte * RawArray = NULL;
 ulong RawFileLen,ArithArrayLen;
 ulong RT_LiteralArrayLen,RT_NumRuns,RT_RunPackedLen,PPMPackedLen;
@@ -159,7 +160,6 @@ for(i=1;i<argc;i++)
       case 'l':
       case 'L':
         {
-        int T;
         DoLRU = 1;
         fprintf(stderr,"option: LRU node limit \n");
         }
@@ -256,7 +256,9 @@ if ( PreconditionName )
   if ( (PrecondArray = malloc(PrecondArrayLen)) == NULL )
     CleanUp("malloc failed on Precondition!");
 
-  FRead(PrecondFP,PrecondArray,PrecondArrayLen);
+  if (FRead(PrecondFP,PrecondArray,PrecondArrayLen) != PrecondArrayLen) {
+  	CleanUp("Failed to read all of PrecondFP");
+  }
 
   fclose(PrecondFP); PrecondFP = NULL;
   }
@@ -286,7 +288,9 @@ if ( TuneConfig || DoAllCoders ) {
 	  if ( (ArithArray = malloc(ArithArrayLen+ARRAY_POSTPAD)) == NULL )
 	    CleanUp("AllocMem failed!");
   
-	  FRead(RawFP,RawArray,RawFileLen);
+	  if (FRead(RawFP,RawArray,RawFileLen) != RawFileLen) {
+	  	CleanUp("Failed to read all of RawFP(1)");
+	  }
 
 	  if ( DoRunTransform ) {
 	    if ( ! RunPack(RawArray,RawFileLen,RawArray,&RT_LiteralArrayLen,ArithArray,&RT_NumRuns,&RT_RunPackedLen) )
@@ -302,7 +306,7 @@ if ( TuneConfig || DoAllCoders ) {
 if ( TuneConfig ) {
 	long OutFileLen,originalOutLen;
 	configTune *curTune;
-	int curStep,curVal,curBestVal,curBestLen;
+	int curStep,curVal,curBestVal,curBestLen=0;
 	bool done;
 
 	originalOutLen = 0;
@@ -325,7 +329,7 @@ if ( TuneConfig ) {
 			    	  PrecondArray,PrecondArrayLen,DoLRU);
 				if ( originalOutLen == 0 ) {
 					originalOutLen = curBestLen;
-					fprintf(stderr,"initially : %s : %d -> %d = ",FilePart(InName),RawFileLen,curBestLen);
+					fprintf(stderr,"initially : %s : %lu -> %d = ",FilePart(InName),RawFileLen,curBestLen);
 					TheCompressionIndicatorMin(RawFileLen,curBestLen+RT_RunPackedLen+1,stderr);
 					errputs("");
 				}
@@ -530,7 +534,10 @@ if ( ! GotDecompressFlag ) {
 		if ( (DeCompareArray = malloc(DeCompareArrayLen)) == NULL )
 			CleanUp("malloc failed on DeCompare!");
 
-		FRead(DeCompareFP,DeCompareArray,DeCompareArrayLen);
+		if (FRead(DeCompareFP,DeCompareArray,DeCompareArrayLen) != DeCompareArrayLen)
+		{
+			CleanUp("Failed to read all of DeCompareFP");
+		}
 
 		fclose(DeCompareFP); DeCompareFP = NULL;
 
@@ -567,7 +574,9 @@ if ( ! GotDecompressFlag )
   {
   long OutFileLen;
 
-  FRead(RawFP,RawArray,RawFileLen);
+  if (FRead(RawFP,RawArray,RawFileLen) != RawFileLen) {
+  	CleanUp("Failed to read all of RawFP(2)");
+  }
   MadeCRC = crc32(RawArray,RawFileLen);
 
   RunArray = ArithArray;
@@ -723,13 +732,21 @@ else
   RunArray = ArithArray;
   PPMArray = ArithArray + RT_RunPackedLen;
 
-	if ( RT_RunPackedLen > 0 )
-		FRead(ArithFP,RunArray,RT_RunPackedLen);
+	if ( RT_RunPackedLen > 0 ) {
+		if (FRead(ArithFP,RunArray,RT_RunPackedLen) != RT_RunPackedLen) {
+			CleanUp("Failed to read all of ArithFP: RunPackedLen");
+		}
+	}
 
 	if ( CoderNum == CODERNUM_RAW ) {
-		FRead(ArithFP,RawArray,RT_LiteralArrayLen);
+		if (FRead(ArithFP,RawArray,RT_LiteralArrayLen) != RT_LiteralArrayLen)
+		{
+			CleanUp("Failed to read all of ArtihFP: LiteralArrayLen");
+		}
 	} else {
-		FRead(ArithFP,PPMArray,PPMPackedLen);
+		if (FRead(ArithFP,PPMArray,PPMPackedLen) != PPMPackedLen) {
+			CleanUp("Failed to read all of ArithFP: PPMPackedLen");
+		}
 
 		/* make sure PPMArray is zero-padded */
 		PPMArray[PPMPackedLen] = 0;
@@ -787,6 +804,12 @@ else
 printf(", %ld byps\n", NumPerSec(RawFileLen,DiffClock) );
 
 CleanUp(NULL);
+
+/* The Cleanup function eventually exit()s with some value, but ANSI C
+	requires an int return type and a return value. So here it is,
+	even though it'll never be reached.
+*/
+return 0;
 }
 
 void CleanUp(char * ExitMess)

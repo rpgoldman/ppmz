@@ -204,7 +204,7 @@ bool PPM_CheckErr(struct PPMcoderInfo * PPMCI)
 {
 bool Ret=1;
 
-#define CHECKERROR(zz) if ( PPMCI->zz && PPMCI->zz->Error ) { Ret =0; fprintf(stderr,"\n PPMZ order %d Interal Error : %d\n\n",PPMCI->zz->order,PPMCI->zz->Error); dbf(); }
+#define CHECKERROR(zz) if ( PPMCI->zz && PPMCI->zz->Error ) { Ret =0; fprintf(stderr,"\n PPMZ order %d Interal Error : %ld\n\n",PPMCI->zz->order,PPMCI->zz->Error); dbf(); }
 
 CHECKERROR(O1_PPMI);
 CHECKERROR(O2_PPMI);
@@ -1322,14 +1322,14 @@ int PPMcoder_OrderList[] = { 8,7,6,5,4,3,2,1,0,  88,88,88,88,88,88,88,88,88,88,8
 
 void PPM_ShowFingerPrint(struct PPMcoderInfo * PPMCI)
 {
-if ( PPMCI->O8_PPMI ) printf("%08X ",PPMZ_FingerPrint(PPMCI->O8_PPMI));
-if ( PPMCI->O7_PPMI ) printf("%08X ",PPMZ_FingerPrint(PPMCI->O7_PPMI));
-if ( PPMCI->O6_PPMI ) printf("%08X ",PPMZ_FingerPrint(PPMCI->O6_PPMI));
-if ( PPMCI->O5_PPMI ) printf("%08X ",PPMZ_FingerPrint(PPMCI->O5_PPMI));
-if ( PPMCI->O4_PPMI ) printf("%08X ",PPMZ_FingerPrint(PPMCI->O4_PPMI));
-if ( PPMCI->O3_PPMI ) printf("%08X ",PPMZ_FingerPrint(PPMCI->O3_PPMI));
-if ( PPMCI->O2_PPMI ) printf("%08X ",PPMZ_FingerPrint(PPMCI->O2_PPMI));
-if ( PPMCI->O1_PPMI ) printf("%08X ",PPMZ_FingerPrint(PPMCI->O1_PPMI));
+if ( PPMCI->O8_PPMI ) printf("%08lX ",PPMZ_FingerPrint(PPMCI->O8_PPMI));
+if ( PPMCI->O7_PPMI ) printf("%08lX ",PPMZ_FingerPrint(PPMCI->O7_PPMI));
+if ( PPMCI->O6_PPMI ) printf("%08lX ",PPMZ_FingerPrint(PPMCI->O6_PPMI));
+if ( PPMCI->O5_PPMI ) printf("%08lX ",PPMZ_FingerPrint(PPMCI->O5_PPMI));
+if ( PPMCI->O4_PPMI ) printf("%08lX ",PPMZ_FingerPrint(PPMCI->O4_PPMI));
+if ( PPMCI->O3_PPMI ) printf("%08lX ",PPMZ_FingerPrint(PPMCI->O3_PPMI));
+if ( PPMCI->O2_PPMI ) printf("%08lX ",PPMZ_FingerPrint(PPMCI->O2_PPMI));
+if ( PPMCI->O1_PPMI ) printf("%08lX ",PPMZ_FingerPrint(PPMCI->O1_PPMI));
 printf("\n");
 }
 

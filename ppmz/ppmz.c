@@ -175,7 +175,6 @@ struct PPMZInfo * PPMZ_Init(arithInfo * ari,int Flags,int scaleDown,
   struct PPMZ_MemPools * Pools,int order,escInfo *ei)
 {
 struct PPMZInfo * PPMI;
-int i,j,k;
 
 if ( (PPMI = AllocMem(sizeof(struct PPMZInfo),MEMF_ANY|MEMF_CLEAR)) == NULL )
   return(NULL);
@@ -250,7 +249,10 @@ CurContextInfo->TotCount = TotProb;
  */
 bool PPMZ_EncodeC(struct PPMZInfo * PPMI,long Symbol,ulong Context,ulong HOContext,exclusion * Exclusion)
 {
-struct PPMZ_ContextIndex *CurIndex,*PrevIndex;
+struct PPMZ_ContextIndex *CurIndex;
+#ifdef DO_MTF
+struct PPMZ_ContextIndex *PrevIndex;
+#endif
 struct PPMZ_ContextInfo *CurContextInfo;
 struct PPMZ_Node *CurNode;
 long Hash;
@@ -259,7 +261,10 @@ Hash = PPMHASH(Context);
 
 /** find a context index **/
 
+#ifdef DO_MTF
 PrevIndex = NULL;
+#endif
+
 CurIndex = PPMI->ContextIndeces[Hash];
 while(CurIndex)
   {
@@ -275,7 +280,9 @@ while(CurIndex)
 #endif
     goto PPMZ_Encode_FoundCurIndex;
     }
+#ifdef DO_MTF
   PrevIndex = CurIndex;
+#endif
   CurIndex = CurIndex->Next;
   }
 
@@ -460,7 +467,10 @@ return(0);
  */
 bool PPMZ_DecodeC(struct PPMZInfo * PPMI,long * SymbolPtr,ulong Context,ulong HOContext,exclusion * Exclusion)
 {
-struct PPMZ_ContextIndex *CurIndex,*PrevIndex;
+struct PPMZ_ContextIndex *CurIndex;
+#ifdef DO_MTF
+struct PPMZ_ContextIndex *PrevIndex;
+#endif
 struct PPMZ_ContextInfo *CurContextInfo;
 struct PPMZ_Node *CurNode;
 long Hash;
@@ -470,7 +480,9 @@ long Hash;
 Hash = PPMHASH(Context);
 
 CurIndex = PPMI->ContextIndeces[Hash];
+#ifdef DO_MTF
 PrevIndex = NULL;
+#endif
 while(CurIndex)
   {
   if ( CurIndex->Context == Context )
@@ -486,7 +498,9 @@ while(CurIndex)
 #endif
     goto PPMZ_Decode_FoundCurIndex;
     }
+#ifdef DO_MTF
   PrevIndex = CurIndex;
+#endif
   CurIndex = CurIndex->Next;
   }
 
@@ -704,7 +718,10 @@ free(PPMI);
 
 bool PPMZ_UpdateC(struct PPMZInfo * PPMI,long Symbol,ulong Context,ulong HOContext)
 {
-struct PPMZ_ContextIndex *CurIndex,*PrevIndex;
+struct PPMZ_ContextIndex *CurIndex;
+#ifdef DO_MTF
+struct PPMZ_ContextIndex *PrevIndex;
+#endif
 struct PPMZ_ContextInfo *CurContextInfo;
 struct PPMZ_Node *CurNode;
 long Hash;
@@ -715,7 +732,9 @@ Hash = PPMHASH(Context);
 
 /** find a context index **/
 
+#ifdef DO_MTF
 PrevIndex = NULL;
+#endif
 CurIndex = PPMI->ContextIndeces[Hash];
 while(CurIndex)
   {
@@ -732,7 +751,9 @@ while(CurIndex)
 #endif
     goto PPMZ_Encode_FoundCurIndex;
     }
+#ifdef DO_MTF
   PrevIndex = CurIndex;
+#endif
   CurIndex = CurIndex->Next;
   }
 
@@ -912,7 +933,7 @@ return( (ESC_SCALE*EscP)/TotP );
 void PPMZ_GetInfo(struct PPMZInfo * PPMI,ulong Context,ulong HOContext,
   ulong * MPS_P_ptr,ulong * Esc_P_ptr,ulong *entropy_ptr)
 {
-struct PPMZ_ContextIndex *CurIndex,*PrevIndex;
+struct PPMZ_ContextIndex *CurIndex;
 struct PPMZ_ContextInfo *CurContextInfo;
 struct PPMZ_Node *CurNode;
 long Hash;
@@ -926,12 +947,10 @@ Hash = PPMHASH(Context);
 
 /** find a context index **/
 
-PrevIndex = NULL;
 CurIndex = PPMI->ContextIndeces[Hash];
 if ( !CurIndex) return;
 while( CurIndex->Context != Context )
   {
-  PrevIndex = CurIndex;
   CurIndex = CurIndex->Next;
   if ( !CurIndex) return;
   }
