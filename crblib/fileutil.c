@@ -197,7 +197,11 @@ void PrefixCurDir(char *AddTo)
 char CurDir[2048];
 char * AddToPtr;
 
-getcwd(CurDir,1024);
+if (getcwd(CurDir,1024) == NULL) {
+	printf("Failure to get current working directory: %d(%s)\n",
+		errno, strerror(errno));
+	exit(EXIT_FAILURE);
+}
 
 if ( *AddTo == ':' || *AddTo == '\\' )
 	{
@@ -326,10 +330,10 @@ char * FilePart(char *F)
 {
 char *a;
 
-if ( a = strrchr(F,PathDelim) )
+if ( (a = strrchr(F,PathDelim)) != NULL )
 	return(a+1);
 
-if ( a = strrchr(F,':') )
+if ( (a = strrchr(F,':')) != NULL )
 	return(a+1);
 
 return(F);
@@ -355,7 +359,7 @@ if ( stat(Name,&st) == 0 )
 	return(0);
 	}
 
-if ( NamePath = malloc(strlen(Name)+1) )
+if ( (NamePath = malloc(strlen(Name)+1)) != NULL )
 	{
   strcpy(NamePath,Name);
   CutEndPath(NamePath);
