@@ -99,10 +99,28 @@ return (L - 1);
 #endif
 }
 
+// psilord- commented out because it'll break strict-aliasing rules.
+//int flog2(float xf)
+//{
+//return ((*(int*)&xf) >> 23) - 127;
+//}
+//
+// Replaced with an implementation that uses union to get around that
+// problem. However, it depends on little endianess and IEEE-float
+// representation so technically this is still undefined code. 
+// Che Sera, Sera. 2013/11/08
 int flog2(float xf)
 {
-return ((*(int*)&xf) >> 23) - 127;
+	union {
+		float f;
+		int i;
+	} u;
+
+	u.f = xf;
+
+	return (u.i >> 23) - 127;
 }
+
 
 #endif //}
 
