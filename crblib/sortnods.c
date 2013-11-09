@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <crblib/inc.h>
+#include <crblib/strutil.h>
 #include <time.h>
 
 // #define RADIX /* has bugs */
@@ -226,7 +227,7 @@ int NodeCompare(const void * v1,const void *v2)
 SortNode *N1 = *((SortNode **)v1);
 SortNode *N2 = *((SortNode **)v2);
 if ( N1->Index == N2->Index )
-	return strcmp(N1->MoreIndexPtr,N2->MoreIndexPtr);
+	return blockcmp(N1->MoreIndexPtr,N2->MoreIndexPtr);
 return (N1->Index - N2->Index);
 }
 
