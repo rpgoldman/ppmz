@@ -19,7 +19,9 @@ extern void Timer_Stop(void);
 
 #ifdef DO_TIMER	//}{
 
+#if !defined(unix)
 #pragma message("timer ON")
+#endif
 
 #ifdef _DEBUG //}{
 
@@ -48,7 +50,9 @@ extern void Timer_Stop(void);
 
 #else	//}{
 
+#if !defined(unix)
 #pragma message("timer OFF")
+#endif
 
 #define TIMER_VARS(func)
 #define TIMER_P(func)

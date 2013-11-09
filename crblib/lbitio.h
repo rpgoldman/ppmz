@@ -15,8 +15,10 @@
 
 #include <crblib/inc.h>
 
+#if !defined(unix)
 #pragma warning( disable : 4244 )	// loss of data in conversion
 									// this is naughty, I know
+#endif
 
 struct LBitIOInfo
   {
