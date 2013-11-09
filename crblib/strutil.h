@@ -29,8 +29,10 @@ extern void strcommas(char *str,ulong num);
 /* str*() like functions, but for the ubyte memory region */
 extern int blocklen(ubyte *ptr);
 ubyte* blockcpy(void *vdst, void *vsrc);
+ubyte* blockncpy(void *vdst, void *vsrc, int len);
 int blockcmp(void *s1, void *s2);
 int blockncmp(void *s1, void *s2, int len);
+ubyte* blockchr(ubyte *s, unsigned int c);
 
 extern char * strichr(const char *str,short c);
 extern char * stristr(const char *bigstr,const char *substr);

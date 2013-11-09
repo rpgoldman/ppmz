@@ -10,8 +10,8 @@
 
 extern void NumToConvStr (long num,char *out,ubyte type);
 extern long ConvStrToNum (char *str);
-extern void ConvAll(char *str); /*converts all non-dec. nums to dec*/
+extern void ConvAll(ubyte *str); /*converts all non-dec. nums to dec*/
 extern void ltoh(char *str,ulong ULV);
-extern ulong htol(char * str);
+extern ulong htol(ubyte * str);
 
 #endif

@@ -198,6 +198,42 @@ ubyte* blockcpy(void *vdst, void *vsrc)
 	return (ubyte*)vdst; /* the original vdst pointer */
 }
 
+/* copy the first len bytes, or up to the first 0x00 from srcinto dest.
+	Much like strncpy, don't terminate the dst with 0x00 if it is not found
+	within the first len bytes.
+*/
+ubyte* blockncpy(void *vdst, void *vsrc, int len)
+{
+	ubyte *dst = (ubyte*)vdst;
+	ubyte *src = (ubyte*)vsrc;
+	int i;
+
+	for (i = 0; i < len && *src != 0x00; i++) {
+		*dst++ = *src++;
+	}
+
+	return (ubyte*)vdst; /* the original vdst pointer */
+}
+
+/* similar in function to strchr(), but for ubyte spaces */
+ubyte* blockchr(ubyte *s, unsigned int c)
+{
+    while(*s != 0x00) {
+        if (c == *s) {
+            return s;
+        }
+        s++;
+    }
+
+    /* Check to see if they wanted the terminator itself */
+    if (c == *s) {
+        return s;
+    }
+
+    return NULL;
+}
+
+
 /* With 0x00 being the end of memory sentinel, compare the blocks of
 	memory as ubytes similarly to how strcmp() does the work.
 	Take care to not beyond the sentinel in any array.
@@ -230,6 +266,9 @@ int blockcmp(void *vs1, void *vs2)
 	return 0;
 }
 
+/* With 0x00 being the end of a block of memory, perform a comparison up
+	to the sentinel or len. Similar to strncmp().
+*/
 int blockncmp(void *vs1, void *vs2, int len)
 {
 	ubyte *s1 = (ubyte*)vs1;

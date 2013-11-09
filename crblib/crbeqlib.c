@@ -434,11 +434,11 @@ int plen,eqlen;
 int startpc,endpc;
 
 eqlen=blocklen(eq);
-while (StartP=strchr(eq,'('))
+while ((StartP=blockchr(eq,'(')) != NULL)
   {
   EndP=CorrespondP(StartP);
   plen=EndP-StartP+1;
-  strncpy(D->Tokens[D->TokNum],StartP+1,plen-2);
+  blockncpy(D->Tokens[D->TokNum],StartP+1,plen-2);
   D->Tokens[D->TokNum][plen-2]=0;
   startpc=StartP-eq;
   endpc=EndP-eq;
@@ -469,7 +469,7 @@ while(*add)
     numbuf[0]= *add; add++;
     if (isdigit(*add)) { numbuf[1]= *add; add++; numbuf[2]=0; }
     else numbuf[1]=0;
-    i=atoi(numbuf);
+    i=atoi((char*)numbuf);
     D->TokWork[D->TokWorkCnt]='('; D->TokWorkCnt++;
     Tok2Eq(D,D->Tokens[i]);
     D->TokWork[D->TokWorkCnt]=')'; D->TokWorkCnt++;
@@ -499,13 +499,13 @@ while(*t)
   }
 for(i=0;i<TN;i++)
   {
-  if (strchr(D->OrdTerms[i],STOREubyte)) D->OrdPri[i]=0;
-  else if (strchr(D->OrdTerms[i],'^')||
-           strchr(D->OrdTerms[i],'S')||
-           strchr(D->OrdTerms[i],'A')||
-           strchr(D->OrdTerms[i],'O')) D->OrdPri[i]=1;
-  else if (strchr(D->OrdTerms[i],'*')||
-           strchr(D->OrdTerms[i],'/')) D->OrdPri[i]=2;
+  if (blockchr(D->OrdTerms[i],STOREubyte)) D->OrdPri[i]=0;
+  else if (blockchr(D->OrdTerms[i],'^')||
+           blockchr(D->OrdTerms[i],'S')||
+           blockchr(D->OrdTerms[i],'A')||
+           blockchr(D->OrdTerms[i],'O')) D->OrdPri[i]=1;
+  else if (blockchr(D->OrdTerms[i],'*')||
+           blockchr(D->OrdTerms[i],'/')) D->OrdPri[i]=2;
   else D->OrdPri[i]=3; 
   }
 for(k=0;k<4;k++)
@@ -540,11 +540,11 @@ do
   if (*t=='+' || *t=='-') t++;
   for(i=0 ; i<TN ; i++)
     {
-    if (strchr(D->OrdTerms[i],STOREubyte)) D->OrdPri[i]=0;
-    else if (strchr(D->OrdTerms[i],'^')||
-             strchr(D->OrdTerms[i],'S')||
-             strchr(D->OrdTerms[i],'A')||
-             strchr(D->OrdTerms[i],'O')) D->OrdPri[i]=1;
+    if (blockchr(D->OrdTerms[i],STOREubyte)) D->OrdPri[i]=0;
+    else if (blockchr(D->OrdTerms[i],'^')||
+             blockchr(D->OrdTerms[i],'S')||
+             blockchr(D->OrdTerms[i],'A')||
+             blockchr(D->OrdTerms[i],'O')) D->OrdPri[i]=1;
     else D->OrdPri[i]=2;
     }
   for(k=0 ; k<3 ; k++)
@@ -855,7 +855,7 @@ void ShowCRBEQ(struct EqData *d)
 register ubyte *EQ;
 register int c;
 char *Out;
-ubyte *OutT;
+char *OutT;
 
 if ( (Out=AllocMem(STRSIZE,MEMF_ANY)) == NULL) return;
 
@@ -898,7 +898,10 @@ while(1)
       sprintf((char*)Out,"%d",c);
       strcat(Out,"] = ");
       OutT=Out+strlen(Out);
-      gcvt(d->PreStored[c],10,OutT);
+      if (gcvt(d->PreStored[c],10,OutT) == NULL) {
+	  	printf("Floating point conversion fail. at PRESTORED.\n");
+		exit(EXIT_FAILURE);
+	  }
       AddDebugMess(d,Out);
       break;
     case FMSTORE:
@@ -1171,7 +1174,7 @@ d->StrEq    = AllocMem(d->StrEqSize     ,MEMF_ANY);
 
 if ( !(d->EQ) || 
      !(d->Store) || 
-     !(d->PreStored) && (d->PreStoredSize) || 
+     (!(d->PreStored) && (d->PreStoredSize)) || 
      !(d->StrEq) )
   {
   if (d->EQ)        FreeMem(d->EQ,d->EQSize);
@@ -1220,7 +1223,7 @@ FreeMem(d,sizeof(struct EqData));
 void AddDebugMess(struct EqData *D, char *S)
 {
 
-if (D->DebugMess[D->DebugMessNext]=AllocMem(STRSIZE,MEMF_ANY))
+if ((D->DebugMess[D->DebugMessNext]=AllocMem(STRSIZE,MEMF_ANY)) != NULL)
   {
   blockcpy(D->DebugMess[D->DebugMessNext],S);
   D->DebugMessNext++;
@@ -1330,7 +1333,7 @@ if (d->Flags & DEBUG)
   if ( (MallocWork=AllocMem(STRSIZE,MEMF_ANY)) )
     {
     sprintf((char*)MallocWork,"Made: %s",d->StrEq);
-    AddDebugMess(d,MallocWork);
+    AddDebugMess(d,(char*)MallocWork);
     FreeMem(MallocWork,STRSIZE);
     }
   else
@@ -1386,7 +1389,7 @@ MallocMax=max(MallocMax,d->EQSize);
 MallocMax=max(MallocMax,d->PreStoredSize);
 MallocMax=max(MallocMax,d->StoreSize);
 
-if ( MallocWork=AllocMem(MallocMax,MEMF_ANY) )
+if ( (MallocWork=AllocMem(MallocMax,MEMF_ANY)) != NULL )
   {
   
   MemCpy(MallocWork,d->EQ,d->EQSize);
@@ -1486,7 +1489,7 @@ newl = strlen(str);
 		if ( insert[2] != '(' ) /* ) */
 			return; // error
 
-		if ( (endinsert = CorrespondP(insert+2)) == NULL )
+		if ( (endinsert = (char*)CorrespondP((ubyte*)(insert+2))) == NULL )
 			return; // error
 
 		*endinsert = 0;
@@ -2066,7 +2069,7 @@ if (i==40)
   return(0);
   }
 
-return((double)atof(numbuf));
+return((double)atof((char*)numbuf));
 }
 
 double Factorial(double N)

@@ -8,13 +8,7 @@
 #include <crblib/inc.h>
 #include <crblib/strutil.h>
 #include <crblib/crbconv.h>
-
-void StrBump (ubyte *Dat,long Off,long Len);
-char * CorrespondP(char *str);
-long Min(long a,long b);
-long UnmatchedParenthesis (char *str); /*returns 0 if all match ok*/
-void StrUprNotQuoted(char *str);
-void StrCutSpaceNotQuoted(char *str);
+#include <crblib/equtil.h>
 
 #ifndef mabs
 #define mabs(x) ( (x) < 0 ? - (x) : (x) )
@@ -36,7 +30,7 @@ if (a<b) return(a);
 return(b);
 }
 
-char * CorrespondP(char *str)
+ubyte * CorrespondP(ubyte *str)
 {
 str++;
 while(*str!=')' && *str)
@@ -47,7 +41,7 @@ while(*str!=')' && *str)
 return(str);
 }
 
-long UnmatchedParenthesis (char *str) /*returns 0 if all match ok*/
+long UnmatchedParenthesis (ubyte *str) /*returns 0 if all match ok*/
 {
 register long NumParens=0;
 while(*str)
@@ -60,7 +54,7 @@ while(*str)
 return(NumParens);
 }
 
-void StrUprNotQuoted(char *str)
+void StrUprNotQuoted(ubyte *str)
 {
 
 while(*str)
@@ -89,9 +83,9 @@ while(*str)
 
 }
 
-void StrCutSpaceNotQuoted(char *str)
+void StrCutSpaceNotQuoted(ubyte *str)
 {
-char *tostr = str;
+ubyte *tostr = str;
 
 while(*str)
   {

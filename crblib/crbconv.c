@@ -19,9 +19,9 @@ all routines work on signed longs
 */
 
 void ltoh(char *str,ulong ULV);
-ulong htol(char * str);
+ulong htol(ubyte * str);
 
-long ConvStrToNumStepping(char *str,char **endstrptr)
+long ConvStrToNumStepping(ubyte *str,ubyte **endstrptr)
 {
 long ret;
 
@@ -52,7 +52,7 @@ else if ( *str == '$' )
   }
 else if ( isdigit(*str) )
   {
-  ret = atol(str);
+  ret = atol((char*)str);
 
   if ( *str == '-' ) str++;
   while ( isdigit(*str) ) str++;
@@ -66,7 +66,7 @@ if ( endstrptr ) *endstrptr = str;
 return(ret);
 }
 
-long ConvStrToNum(char *str)
+long ConvStrToNum(ubyte *str)
 {
 return(ConvStrToNumStepping(str,NULL));
 }
@@ -116,10 +116,10 @@ switch(type)
 strins(out,temp);
 }
 
-void ConvAll(char *str) /*converts all non-dec. nums to dec*/
+void ConvAll(ubyte *str) /*converts all non-dec. nums to dec*/
 {
-char * endstr;
-char * insert;
+ubyte * endstr;
+ubyte * insert;
 long num;
 
 while(*str) {
@@ -148,7 +148,7 @@ while(*str) {
 
 }
 
-ulong htol(char * str)
+ulong htol(ubyte * str)
 {
 ulong ret;
 char c;

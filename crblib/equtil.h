@@ -4,11 +4,11 @@
 #include <crblib/inc.h>
 
 extern void StrBump (ubyte *Dat,long Off,long Len);
-extern char * CorrespondP(char *str);
+extern ubyte * CorrespondP(ubyte *str);
 extern long Min(long a,long b);
-extern long UnmatchedParenthesis (char *str); /*returns 0 if all match ok*/
-extern void StrUprNotQuoted(char *str);
-extern void StrCutSpaceNotQuoted(char *str);
+extern long UnmatchedParenthesis (ubyte *str); /*returns 0 if all match ok*/
+extern void StrUprNotQuoted(ubyte *str);
+extern void StrCutSpaceNotQuoted(ubyte *str);
 extern void MakeResult(char *Str,double V,int Precision);
 
 #endif

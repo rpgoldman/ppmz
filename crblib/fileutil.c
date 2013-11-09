@@ -66,7 +66,10 @@ FILE *fp;
 		return NULL;
 	}
 
-	FRead(fp,buf,len);
+	if (FRead(fp,buf,len) != len) {
+		printf("Failed to read the whole file: %s\n", name);
+		exit(EXIT_FAILURE);
+	}
 
 	fclose(fp);
 
